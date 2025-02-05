@@ -81,31 +81,17 @@ function displayQuestion() {
 	let answerButtons = document.getElementById("answerTextBox");
 	answerButtons.innerHTML = "";
 
-	// Combine correct and incorrect answers, then shuffle
 	let answers = [...question.incorrectAnswers, question.correctAnswer];
 	answers.sort(() => Math.random() - 0.5); // Shuffle the answers
 
-	// Loop through answers and create buttons
 	for (let i = 0; i < answers.length; i++) {
-		let btn = document.createElement("button"); // Create button
-		btn.textContent = answers[i]; // Set button text
+		let btn = document.createElement("button"); 
+		btn.textContent = answers[i];
 		btn.onclick = function () {
-			checkAnswer(answers[i], question.correctAnswer); // Check answer when clicked
+			checkAnswer(answers[i], question.correctAnswer); 
 		};
-		answerButtons.appendChild(btn); // Add button to the page
+		answerButtons.appendChild(btn);
 	}
-
-	// old code 
-	// let answers = [...question.incorrectAnswers, question.correctAnswer];
-	// answers.sort(() => Math.random() - 0.5); // Shuffle answers
-	// let answerButtons = document.getElementById("answerTextBox");
-	// answerButtons.innerHTML = "";
-	// answers.forEach(answer => {
-	// 	let btn = document.createElement("button");
-	// 	btn.textContent = answer;
-	// 	btn.onclick = () => checkAnswer(answer, question.correctAnswer);
-	// 	answerButtons.appendChild(btn);
-	// });
 }
 
 function checkAnswer(selected, correct) {
