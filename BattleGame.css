@@ -1,42 +1,55 @@
-/* styles.css */
-body {
-	font-family: Arial, sans-serif;
-	background-color: #f4f4f4;
+#container {
 	display: grid;
-	justify-content: center;
-	align-items: center;
 }
 
-.inputBox {
+#header {
+	text-align: center;
+}
+
+#playersNameInputDiv {
+	border-top: 2px solid lightgray;
+	border-bottom: 2px solid lightgray;
+	align-content: center;
+	text-align: center;
+	visibility: visible;
+	height: 100px;
 	padding: 10px;
-	margin: 5px;
-	width: 80%;
-	border: 1px solid #ccc;
-	border-radius: 5px;
 }
 
-button {
-	padding: 10px 20px;
-	margin: 10px;
-	border: none;
-	border-radius: 5px;
-	background-color: #28a745;
-	color: white;
-	cursor: pointer;
+#categoriesSelectionDiv {
+	border-top: 2px solid lightgray;
+	border-bottom: 2px solid lightgray;
+	align-content: center;
+	text-align: center;
+	padding: 10px;
+	height: 100px;
+	visibility: collapse;
 }
 
-#categorySelection {
-	display: none;
-}
-
-#battleQuestion {
-	display: none;
+#battleQuestionDiv {
+	border-top: 2px solid lightgray;
+	border-bottom: 2px solid lightgray;
+	text-align: center;
+	align-content: center;
+	padding: 10px;
+	height: 150px;
+	visibility: collapse;
 }
 
 #scoreBoard {
-	display: none;
+	border-top: 2px solid lightgray;
+	border-bottom: 2px solid lightgray;
+	align-content: center;
+	text-align: center;
+	padding: 10px;
+	height: 100px;
+	visibility: collapse;
 }
 
-#nextButton {
-	display: none;
+#gameEndButton {
+	visibility: collapse;
+}
+
+#gameOverHeader {
+	visibility: collapse;
 }

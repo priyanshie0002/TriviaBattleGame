@@ -1,139 +1,144 @@
-const apiUrl = "https://the-trivia-api.com/v2/questions";
-let questions = [];
-let currentQuestionIndex = 0;
-let currentPlayer = 1;
+let categories = ["music", "sport_and_leisure", "film_and_tv", "arts_and_literature", "history", "society_and_culture", "science", "geography", "food_and_drink", "general_knowledge"];
 let player1 = "";
 let player2 = "";
-let scores = { 1: 0, 2: 0 };
-let selectedCategory = "";
-let usedCategories = [];
-let nextTurnCount = 0;
-let categories = ["music", "sport_and_leisure", "film_and_tv", "arts_and_literature", "history"
-	, "society_and_culture", "science", "geography", "food_and_drink", "general_knowledge"];
+let oldSelectedCategories = [];
+let currentPlayer = 1;
+let questions = [];
+let currentPlayerTurn;
+let currentQuestionTurn = 0;
+let nextButtonClickCount = 0;
+let player1Score = 0;
+let player2Score = 0;
 
-function startGame() {
-	player1 = document.getElementById("player1").value;
-	player2 = document.getElementById("player2").value;
-
-	if (!player1 || !player2) {
-		alert("Please enter both player names!");
+async function fetchQuestionByCategories() {
+	let category = document.getElementById("categoryList").value;
+	if (oldSelectedCategories.includes(category)) {
+		alert("Please choose another category, this category is choosed in previous ");
 		return;
-	}
-
-	document.getElementById("categorySelection").style.display = "block";
-	document.getElementById("playerInputNames").style.display = "none";
-
-	populateCategoryDropdown();
-}
-
-function populateCategoryDropdown() {
-
-	let categorySelect = document.getElementById("categories");
-
-	categorySelect.innerHTML = "";
-	categories.forEach(category => {
-		let option = document.createElement("option");
-		option.value = category;
-		option.textContent = category.replace("_", " ");
-		categorySelect.appendChild(option);
-	});
-}
-
-async function fetchQuestions() {
-	selectedCategory = document.getElementById("categories").value;
-	if (usedCategories.includes(selectedCategory)) {
-		alert("Please select another category from categories list")
-		return
-	}
-	console.log(selectedCategory);
-	usedCategories.push(selectedCategory);
-
-	const response = await fetch(`${apiUrl}?categories=${selectedCategory}`);
-	const data = await response.json();
-
-	// Filter all questions for the selected category
-	questions = data.filter(q => q.category === selectedCategory);
-
-	if (questions.length === 0) {
-		alert("No questions available in this category, please select another.");
-		return;
-	}
-
-	document.getElementById("categorySelection").style.display = "none";
-	document.getElementById("battleQuestion").style.display = "block";
-
-	currentQuestionIndex = 0;
-	displayQuestion();
-}
-
-function displayQuestion() {
-	let question = questions[currentQuestionIndex];
-	let playerName = "";
-	if (currentPlayer === 1) {
-		playerName = player1;
 	} else {
-		playerName = player2
+		oldSelectedCategories.push(category);
 	}
 
-	document.getElementById("currentPlayerTurn").textContent = `${playerName}'s Turn`;
-	document.getElementById("questionTextBox").textContent = question.question.text;
-
-	let answerButtons = document.getElementById("answerTextBox");
-	answerButtons.innerHTML = "";
-
-	let answers = [...question.incorrectAnswers, question.correctAnswer];
-	answers.sort(() => Math.random() - 0.5); // Shuffle the answers
-
-	for (let i = 0; i < answers.length; i++) {
-		let btn = document.createElement("button"); 
-		btn.textContent = answers[i];
-		btn.onclick = function () {
-			checkAnswer(answers[i], question.correctAnswer); 
-		};
-		answerButtons.appendChild(btn);
+	let jsonResponse = await fetch(`https://the-trivia-api.com/v2/questions?categories=${category}`);
+	questions = await jsonResponse.json();
+	currentPlayerTurn = 1;
+	console.log(questions);
+	let firstQuestion = questions[currentQuestionTurn];
+	console.log(firstQuestion);
+	document.getElementById("currentPlayer").textContent = `${player1} turn for quiz`
+	document.getElementById("battleQuestion").textContent = firstQuestion.question.text
+	document.getElementById("option1").textContent = firstQuestion.correctAnswer
+	for (let i = 1; i <= firstQuestion.incorrectAnswers.length; i++) {
+		let option = `option${i + 1}`
+		document.getElementById(option).textContent = firstQuestion.incorrectAnswers[i - 1]
 	}
-}
+	document.getElementById("battleQuestionDiv").style.visibility = "visible";
+	document.getElementById("categoriesSelectionDiv").style.visibility = "collapse";
 
-function checkAnswer(selected, correct) {
-	let points = questions[currentQuestionIndex].difficulty === "easy" ? 10 :
-		questions[currentQuestionIndex].difficulty === "medium" ? 15 : 20;
-
-	if (selected === correct) {
-		alert("Correct!");
-		scores[currentPlayer] += points;
-	} else {
-		alert("Wrong answer!");
-	}
-
-	updateScoreboard();
-	document.getElementById("nextButton").style.display = "block";
-}
-
-function updateScoreboard() {
-	document.getElementById("scoreBoard").style.display = "block";
-	document.getElementById("score1").textContent = `${player1} Score: ${scores[1]}`;
-	document.getElementById("score2").textContent = `${player2} Score: ${scores[2]}`;
+	// if (currentPlayerTurn === 1) {
+	// 	currentPlayerTurn = 2;
+	// } else {
+	// 	currentPlayerTurn = 1;
+	// }
 }
 
 function nextTurn() {
-	nextTurnCount++;
-	if (nextTurnCount % 2 === 0) {
-		currentQuestionIndex++;
+	nextButtonClickCount++;
+	console.log(nextButtonClickCount);
+	if (nextButtonClickCount % 2 === 0) {
+		currentQuestionTurn++;
 	}
-	document.getElementById("nextButton").style.display = "none";
 
-	if (currentQuestionIndex >= questions.length) {
+	if (currentPlayerTurn === 1) {
+		currentPlayerTurn = 2;
+	} else {
+		currentPlayerTurn = 1;
+	}
+
+	let playerTurn;
+	if (currentPlayerTurn === 1) {
+		playerTurn = player1;
+	} else {
+		playerTurn = player2
+	}
+	if (currentQuestionTurn >= questions.length) {
 		alert("Round Over! Select another category or end game.");
-		document.getElementById("battleQuestion").style.display = "none";
-		document.getElementById("categorySelection").style.display = "block";
-		nextTurnCount = 0;
+		document.getElementById("battleQuestionDiv").style.visibility = "collapse";
+		document.getElementById("categoriesSelectionDiv").style.visibility = "visible";
+		document.getElementById("gameEndButton").style.visibility = "visible";
+		nextButtonClickCount = 0;
+		return;
+	}
+	let nextQuestion = questions[currentQuestionTurn];
+	console.log(nextQuestion);
+	document.getElementById("currentPlayer").textContent = `${playerTurn} turn for quiz`
+	document.getElementById("battleQuestion").textContent = nextQuestion.question.text
+	document.getElementById("option1").textContent = nextQuestion.correctAnswer
+	for (let i = 1; i <= nextQuestion.incorrectAnswers.length; i++) {
+		let option = `option${i + 1}`
+		document.getElementById(option).textContent = nextQuestion.incorrectAnswers[i - 1]
+	}
+
+	console.log(currentQuestionTurn);
+
+}
+
+function checkPlayerInput() {
+	player1 = document.getElementById("player1").value;
+	console.log(player1);
+	player2 = document.getElementById("player2").value;
+	console.log(player2);
+	if (player1 === "" || player2 === "") {
+		alert("please enter the players names!")
+		return;
+	}
+	document.getElementById("categoriesSelectionDiv").style.visibility = "visible";
+	document.getElementById("playersNameInputDiv").style.visibility = "collapse";
+}
+
+function checkAnswer(button) {
+	let currentQuestionAnswer = questions[currentQuestionTurn];
+	let selectedButtonText = button.textContent
+	console.log(selectedButtonText);
+	console.log(currentQuestionAnswer.correctAnswer);
+	if (selectedButtonText !== currentQuestionAnswer.correctAnswer) {
+		alert("answer is not correct please click on next turn");
 		return;
 	}
 
-	if (currentPlayer === 1) {
-		currentPlayer = 2;
+	//alert("correct answer!");
+	let score = 0;
+
+	if (currentQuestionAnswer.difficulty === "easy") {
+		score = 10;
+	} else if (currentQuestionAnswer.difficulty === "medium") {
+		score = 15;
 	} else {
-		currentPlayer = 1;
+		score = 20;
 	}
-	displayQuestion();
+
+	if (currentPlayerTurn == 1) {
+		player1Score += score;
+	} else {
+		player2Score += score;
+	}
+	console.log(score);
+	document.getElementById("player1Score").textContent = `${player1} Score: ${player1Score}`
+	document.getElementById("player2Score").textContent = `${player2} Score: ${player2Score}`
+	document.getElementById("scoreBoard").style.visibility = "visible"
+}
+
+function endGame() {
+	document.getElementById("categoriesSelectionDiv").style.visibility = "collapse";
+	document.getElementById("declairPlayeWin").style.visibility = "visible";
+	document.getElementById("gameOverHeader").style.visibility = "visible";
+	let text;
+	if (player1Score > player2Score) {
+		text = `${player1} is the winner of battle game.`
+	} else if (player1Score === player2Score) {
+		text = `It is draw between the ${player1} and ${player2}.`
+	} else {
+		text = `${player2} is the winner of battle game.`
+	}
+	document.getElementById("declairPlayeWin").textContent = text;
 }

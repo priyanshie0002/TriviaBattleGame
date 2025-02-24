@@ -4,41 +4,51 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Two-Player Trivia Battle</title>
+	<title>Tiriva Battle Game</title>
 	<link rel="stylesheet" href="BattleGame.css">
 </head>
 
-<body>
-	<div id="mainContainer">
-		<h1>Trivia Battle Game</h1>
-
-		<div id="playerInputNames">
-			<input type="text" class="inputBox" id="player1" placeholder="Enter Player 1 Name">
-			<input type="text" class="inputBox" id="player2" placeholder="Enter Player 2 Name">
-			<button onclick="startGame()">Start Game</button>
-		</div>
-
-		<div id="categorySelection">
-			<h2>Select a Category</h2>
-			<select id="categories"></select>
-			<button onclick="fetchQuestions()">Start Quiz</button>
-		</div>
-
-		<div id="battleQuestion">
-			<h2 id="currentPlayerTurn"></h2>
-			<p id="questionTextBox"></p>
-			<div id="answerTextBox"></div>
-			<button onclick="nextTurn()" id="nextButton">Next</button>
-		</div>
-
-		<div id="scoreBoard">
-			<h2>Scores</h2>
-			<p id="score1"></p>
-			<p id="score2"></p>
-		</div>
+<body id="container">
+	<h1 id="header">Tiriva Battle Game</h1>
+	<div id="playersNameInputDiv">
+		<input type="text" placeholder="Player 1" id="player1">
+		<input type="text" placeholder="Player 2" id="player2">
+		<button type="button" onclick="checkPlayerInput()">Start Game</button>
 	</div>
-
-	<script src="BattleGame.js"></script>
+	<div id="categoriesSelectionDiv">
+		<label for="categoryList">category List</label>
+		<select id="categoryList">
+			<option>music</option>
+			<option>sports_and_leisure</option>
+			<option>film_and_tv</option>
+			<option>arts_and_literature</option>
+			<option>history</option>
+			<option>society_and_culture</option>
+			<option>science</option>
+			<option>geography</option>
+			<option>food_and_drink</option>
+			<option>general_knowledge</option>
+		</select>
+		<button onclick="fetchQuestionByCategories()">Start quiz</button>
+		<br>
+		<button id="gameEndButton" onclick="endGame()">End the Game</button>
+	</div>
+	<div id="battleQuestionDiv">
+		<h3 id="currentPlayer"></h3>
+		<h4 id="battleQuestion"></h4>
+		<button id="option1" class="answerOption" onclick="checkAnswer(this)"></button>
+		<button id="option2" class="answerOption" onclick="checkAnswer(this)"></button>
+		<button id="option3" class="answerOption" onclick="checkAnswer(this)"></button>
+		<button id="option4" class="answerOption" onclick="checkAnswer(this)"></button> <br><br>
+		<button onclick="nextTurn()">next turn</button>
+	</div>
+	<div id="scoreBoard">
+		<p id="player1Score"></p>
+		<p id="player2Score"></p>
+		<h3 id="declairPlayeWin"></h3>
+		<h3 id="gameOverHeader">Game Over</h3>
+	</div>
 </body>
+<script src="BattleGame.js"></script>
 
 </html>
