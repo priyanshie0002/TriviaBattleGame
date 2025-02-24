@@ -2,7 +2,6 @@ let categories = ["music", "sport_and_leisure", "film_and_tv", "arts_and_literat
 let player1 = "";
 let player2 = "";
 let oldSelectedCategories = [];
-let currentPlayer = 1;
 let questions = [];
 let currentPlayerTurn;
 let currentQuestionTurn = 0;
@@ -34,12 +33,6 @@ async function fetchQuestionByCategories() {
 	}
 	document.getElementById("battleQuestionDiv").style.visibility = "visible";
 	document.getElementById("categoriesSelectionDiv").style.visibility = "collapse";
-
-	// if (currentPlayerTurn === 1) {
-	// 	currentPlayerTurn = 2;
-	// } else {
-	// 	currentPlayerTurn = 1;
-	// }
 }
 
 function nextTurn() {
@@ -106,7 +99,6 @@ function checkAnswer(button) {
 		return;
 	}
 
-	//alert("correct answer!");
 	let score = 0;
 
 	if (currentQuestionAnswer.difficulty === "easy") {
